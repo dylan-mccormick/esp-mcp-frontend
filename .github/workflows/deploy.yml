@@ -3,8 +3,8 @@
 
 name: Deploy to Registry
 on:
-  push:
-    branches: [ main ]
+    push:
+        branches: [main, setup]
 
 jobs:
     deploy:
@@ -15,12 +15,14 @@ jobs:
 
             - name: Set up pnpm
               uses: pnpm/action-setup@v6
+              with:
+                  version: 10
 
             - name: Set up Node.js
               uses: actions/setup-node@v7
               with:
-                node-version: 20
-                cache: "pnpm"
+                  node-version: 20
+                  cache: "pnpm"
 
             - name: Install dependencies
               run: pnpm install
@@ -31,4 +33,4 @@ jobs:
             - name: Push to Registry
               run: bash scripts/push-to-registry.sh
               env:
-                REGISTRY_API_KEY: ${{ secrets.REGISTRY_API_KEY }}
+                  REGISTRY_API_KEY: ${{ secrets.REGISTRY_API_KEY }}
