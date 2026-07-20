@@ -1,5 +1,5 @@
 function App() {
-    return <>Hi</>;
+    return <>ESP32 MCP Server</>;
 }
 
 export default App;
