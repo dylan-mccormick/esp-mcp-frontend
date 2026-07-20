@@ -4,6 +4,6 @@ import { defineConfig } from "vite";
 
 // https://vite.dev/config/
 export default defineConfig({
-    base: "https://registry-api.mnmzc.us.to/r/7/api/v1/files/frontend",
+    base: process.env.NODE_ENV == "production" && process.env.BASE_URL || undefined,
     plugins: [react(), tailwindcss()]
 });

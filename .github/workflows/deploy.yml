@@ -29,8 +29,10 @@ jobs:
 
             - name: Build Code
               run: pnpm build
+              env:
+                  BASE_URL: "https://registry-api.mnmzc.us.to/r/7/api/v1/public/frontend/"
 
-            - name: Push to Registry
+            - name: Purge and Push to Registry
               run: bash scripts/push-to-registry.sh
               env:
                   REGISTRY_API_KEY: ${{ secrets.REGISTRY_API_KEY }}

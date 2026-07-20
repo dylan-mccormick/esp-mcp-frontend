@@ -7,6 +7,11 @@ set -euo pipefail
 BASE_URL="https://registry-api.mnmzc.us.to/r/7/api/v1/files/"
 DIST_DIR="dist"
 
+echo "Purging existing files from registry..."
+curl --location --request \
+        DELETE "https://registry-api.mnmzc.us.to/r/7/api/v1/files/frontend" \
+        --header "x-api-key: $REGISTRY_API_KEY"
+
 find "$DIST_DIR" -type f | while read -r file; do
     rel_path="${file#$DIST_DIR/}"
     echo "Pushing $rel_path to registry..."
