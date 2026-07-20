@@ -1,0 +1,34 @@
+# deploy.yml
+# Responsible for running the push-to-registry.sh script to build and push the files to the registry.
+
+name: Deploy to Registry
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+    deploy:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v7
+
+            - name: Set up pnpm
+              uses: pnpm/action-setup@v6
+
+            - name: Set up Node.js
+              uses: actions/setup-node@v7
+              with:
+                node-version: 20
+                cache: "pnpm"
+
+            - name: Install dependencies
+              run: pnpm install
+
+            - name: Build Code
+              run: pnpm build
+
+            - name: Push to Registry
+              run: bash scripts/push-to-registry.sh
+              env:
+                REGISTRY_API_KEY: ${{ secrets.REGISTRY_API_KEY }}
