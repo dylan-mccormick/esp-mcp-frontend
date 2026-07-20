@@ -14,4 +14,7 @@ find "$DIST_DIR" -type f | while read -r file; do
         PUT "https://registry-api.mnmzc.us.to/r/7/api/v1/files/frontend/${rel_path}" \
         --header "x-api-key: $REGISTRY_API_KEY" \
         --form "file=@\"$file\""
+    curl --location --request \
+        PATCH "https://registry-api.mnmzc.us.to/r/7/api/v1/files/frontend/${rel_path}/public?public=true" \
+        --header "x-api-key: $REGISTRY_API_KEY"
 done
