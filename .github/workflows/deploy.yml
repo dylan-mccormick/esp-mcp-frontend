@@ -4,7 +4,7 @@
 name: Deploy to Registry
 on:
   push:
-    branches: [ main ]
+    branches: [ main, setup ]
 
 jobs:
     deploy:
