@@ -1,4 +1,4 @@
-import { Bot, KeyRound, Link2, Sparkles } from "lucide-react";
+import { Bot, Sparkles } from "lucide-react";
 
 import ConnectionStatusBadge from "./ConnectionStatusBadge";
 
