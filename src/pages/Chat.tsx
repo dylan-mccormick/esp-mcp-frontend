@@ -1,8 +1,5 @@
-import AssistantMessage from "../components/AssistantMessage";
 import ChatComposer from "../components/ChatComposer";
 import ConnectionManagerButton from "../components/ConnectionManagerButton";
-import ToolUsageBubble from "../components/ToolUsageBubble";
-import UserMessage from "../components/UserMessage";
 
 const Chat = () => {
     return (
@@ -21,42 +18,7 @@ const Chat = () => {
                 </header>
 
                 <section className="flex-1 space-y-5 pb-6">
-                    <UserMessage message="I want a calm, focused chat layout that still feels polished. Keep the interface minimal, but make the AI feel helpful and technical." />
 
-                    <AssistantMessage message="This layout keeps the conversation center stage, uses soft contrast for hierarchy, and leaves the composition controls anchored at the bottom so the page reads like a dedicated workspace.">
-                        <ToolUsageBubble
-                            title="Scanning interface requirements"
-                            subtitle="Looking at the page shell, spacing rhythm, and the available component surfaces before shaping the final conversation flow."
-                            progress={100}
-                            status="completed"
-                            outputLines={[
-                                "Detected root route at / and a sparse app shell.",
-                                "Using presentational components only, no interaction logic.",
-                                "Thread should remain readable at desktop and mobile widths."
-                            ]}
-                        />
-                    </AssistantMessage>
-
-                    <UserMessage
-                        message="Add a tool-status bubble inside the AI response too. It should feel like the assistant is doing real work, with a terminal-style output window."
-                        timeLabel="1 min ago"
-                    />
-
-                    <AssistantMessage message="That fits naturally as a nested card inside the assistant bubble. I would treat it as a transient status block that can appear before the final response text or beneath it.">
-                        <ToolUsageBubble
-                            title="Preparing response"
-                            subtitle="Formatting a concise answer, collecting relevant structure, and staging the final reply for the user."
-                            progress={80}
-                            status="running"
-                            outputLines={[
-                                "[ready] conversation draft generated",
-                                "[ok] assistant tone aligned to minimalist layout",
-                                "[done] composer, messages, and tool bubble rendered"
-                            ]}
-                        />
-                    </AssistantMessage>
-
-                    <AssistantMessage message="The result should feel restrained but not empty: soft glass surfaces, crisp text, and enough visual weight in the assistant cards to suggest intelligence without visual noise." />
                 </section>
 
                 <section className="flex-1 space-y-5 pb-32"></section>
