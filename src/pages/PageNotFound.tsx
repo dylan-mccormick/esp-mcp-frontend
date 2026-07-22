@@ -8,7 +8,7 @@ const PageNotFound = () => {
         <main className="relative flex min-h-screen items-center justify-center overflow-hidden px-4 py-8 sm:px-6 lg:px-8">
             <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.68),transparent_56%)]" />
 
-            <section className="relative w-full max-w-xl rounded-[2rem] border border-white/70 bg-[rgba(255,255,255,0.76)] p-6 text-center shadow-[0_18px_50px_rgba(36,27,37,0.08)] backdrop-blur-md sm:p-8">
+            <section className="relative w-full max-w-xl rounded-4xl border border-white/70 bg-[rgba(255,255,255,0.76)] p-6 text-center shadow-[0_18px_50px_rgba(36,27,37,0.08)] backdrop-blur-md sm:p-8">
                 <p className="text-[0.68rem] font-semibold uppercase tracking-[0.34em] text-[#7b6a76]">404</p>
                 <h1 className="mt-3 text-3xl font-semibold tracking-[-0.04em] text-[#241b25] sm:text-4xl">
                     Page not found
