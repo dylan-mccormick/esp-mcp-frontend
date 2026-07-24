@@ -1,23 +1,27 @@
+import type Anthropic from "@anthropic-ai/sdk";
 import { createContext } from "react";
 
 export type LLMConnectionStatus = "not connected" | "connecting" | "connected";
 
 interface BaseLLMContextProps {
+    connect: () => void;
     connectionStatus: LLMConnectionStatus;
-    setConnectionStatus: (b: LLMConnectionStatus) => void;
+    setApiKey: (s: string) => void;
+    setMaxTokens: (n: number) => void;
+    setModel: (s: string) => void;
 }
 
 interface DisconnectedLLMContextProps extends BaseLLMContextProps {
     connectionStatus: "not connected";
+    apiKey?: string;
+    maxTokens?: number;
+    model?: string;
 }
 
 export interface ConnectionLLMContextProps extends BaseLLMContextProps {
     apiKey: string;
-    setApiKey: (s: string) => void;
     maxTokens: number;
-    setMaxTokens: (n: number) => void;
     model: string;
-    setModel: (s: string) => void;
 }
 
 interface ConnectingLLMContextProps extends ConnectionLLMContextProps {
@@ -26,11 +30,15 @@ interface ConnectingLLMContextProps extends ConnectionLLMContextProps {
 
 interface ConnectedLLMContextProps extends ConnectionLLMContextProps {
     connectionStatus: "connected";
+    client: Anthropic;
 };
 
 export type LLMContextProps = DisconnectedLLMContextProps | ConnectingLLMContextProps | ConnectedLLMContextProps;
 
 export const LLMContext = createContext<LLMContextProps>({
+    connect: () => {},
     connectionStatus: "not connected",
-    setConnectionStatus: () => {}
+    setApiKey: () => {},
+    setMaxTokens: () => {},
+    setModel: () => {}
 });

@@ -4,10 +4,16 @@ export type MCPServerConnectionStatus = "not connected" | "connecting" | "connec
 
 interface BaseMCPServerContextProps {
     connectionStatus: MCPServerConnectionStatus;
+    setSessionUUID: (s: string) => void;
+    setDeviceName: (s: string) => void;
+    setWifiSSID: (s: string) => void;
     setConnectionStatus: (b: MCPServerConnectionStatus) => void;
 }
 
 interface DisconnectedMCPServerContextProps extends BaseMCPServerContextProps {
+    sessionUUID?: string,
+    deviceName?: string,
+    wifiSSID?: string,
     connectionStatus: "not connected";
 }
 
@@ -23,16 +29,16 @@ interface ConnectingMCPServerContextProps extends ConnectionMCPServerContextProp
 export interface ConnectedMCPServerContextProps extends ConnectionMCPServerContextProps {
     connectionStatus: "connected";
     sessionUUID: string;
-    setSessionUUID: (s: string) => void;
     deviceName: string;
-    setDeviceName: (s: string) => void;
     wifiSSID: string;
-    setWifiSSID: (s: string) => void;
 }
 
 export type MCPServerContextProps = DisconnectedMCPServerContextProps | ConnectingMCPServerContextProps | ConnectedMCPServerContextProps;
 
 export const MCPServerContext = createContext<MCPServerContextProps>({
     connectionStatus: "not connected",
+    setSessionUUID: () => {},
+    setDeviceName: () => {},
+    setWifiSSID: () => {},
     setConnectionStatus: () => {}
 });
