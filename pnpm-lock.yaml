@@ -32,6 +32,9 @@ importers:
       tailwindcss:
         specifier: ^4.3.3
         version: 4.3.3
+      uuid:
+        specifier: ^14.0.1
+        version: 14.0.1
     devDependencies:
       '@types/node':
         specifier: ^24.13.2
@@ -844,6 +847,10 @@ packages:
   undici-types@7.18.2:
     resolution: {integrity: sha512-AsuCzffGHJybSaRrmr5eHr81mwJU3kjw6M+uprWvCXiNeN9SOGwQ3Jn8jb8m3Z6izVgknn1R0FTCEAP2QrLY/w==}
 
+  uuid@14.0.1:
+    resolution: {integrity: sha512-6ZxzVpzDXDa3bJWaHilVayA+BH/1zmxCJoVgvmqJnid/gPoKHxUrS/aC/T6LGQtNHT+XHG9fXPJB4d+IrU30Ew==}
+    hasBin: true
+
   vite@8.1.5:
     resolution: {integrity: sha512-7ULLwsCdYx/nRyrpiEwvqb5TFHrMVZyBt+rg/OAXT7rgj/z+DtTDyKFeLAdDkubDVDKD8jOsndmy7m55XcfUsw==}
     engines: {node: ^20.19.0 || >=22.12.0}
@@ -1454,6 +1461,8 @@ snapshots:
   typescript@6.0.3: {}
 
   undici-types@7.18.2: {}
+
+  uuid@14.0.1: {}
 
   vite@8.1.5(@types/node@24.13.3)(jiti@2.7.0):
     dependencies:
