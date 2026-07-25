@@ -25,8 +25,7 @@ const ConnectionManager = () => {
                     <button
                         type="button"
                         onClick={() => navigate("/")}
-                        className="ui-button ui-button-pill ui-button-surface"
-                    >
+                        className="ui-button ui-button-pill ui-button-surface">
                         <ArrowLeft className="h-4 w-4" />
                         Return to chat
                     </button>

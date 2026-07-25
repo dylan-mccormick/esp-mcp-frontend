@@ -17,9 +17,7 @@ const Chat = () => {
                     <ConnectionManagerButton isConnected={true} />
                 </header>
 
-                <section className="flex-1 space-y-5 pb-6">
-
-                </section>
+                <section className="flex-1 space-y-5 pb-6"></section>
 
                 <section className="flex-1 space-y-5 pb-32"></section>
 

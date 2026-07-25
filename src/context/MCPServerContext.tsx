@@ -10,9 +10,9 @@ interface BaseMCPServerContextProps {
     setWifiSSID: (s: string) => void;
     setIpAddress: (s: string) => void;
     ipAddress?: string;
-    sessionUUID?: string,
-    deviceName?: string,
-    wifiSSID?: string,
+    sessionUUID?: string;
+    deviceName?: string;
+    wifiSSID?: string;
     setConnectionStatus: (b: MCPServerConnectionStatus) => void;
 }
 
@@ -36,7 +36,10 @@ export interface ConnectedMCPServerContextProps extends ConnectionMCPServerConte
     wifiSSID: string;
 }
 
-export type MCPServerContextProps = DisconnectedMCPServerContextProps | ConnectingMCPServerContextProps | ConnectedMCPServerContextProps;
+export type MCPServerContextProps =
+    | DisconnectedMCPServerContextProps
+    | ConnectingMCPServerContextProps
+    | ConnectedMCPServerContextProps;
 
 export const MCPServerContext = createContext<MCPServerContextProps>({
     connect: () => {},

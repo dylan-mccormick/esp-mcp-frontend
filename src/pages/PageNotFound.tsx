@@ -21,16 +21,14 @@ const PageNotFound = () => {
                     <button
                         type="button"
                         onClick={() => navigate("/")}
-                        className="ui-button ui-button-primary ui-button-pill"
-                    >
+                        className="ui-button ui-button-primary ui-button-pill">
                         <ArrowLeft className="h-4 w-4" />
                         Return to chat
                     </button>
                     <button
                         type="button"
                         onClick={() => navigate("/connections")}
-                        className="ui-button ui-button-outline ui-button-pill"
-                    >
+                        className="ui-button ui-button-outline ui-button-pill">
                         Open connections
                     </button>
                 </div>

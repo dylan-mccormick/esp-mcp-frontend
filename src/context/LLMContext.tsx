@@ -26,12 +26,12 @@ export interface ConnectionLLMContextProps extends BaseLLMContextProps {
 
 interface ConnectingLLMContextProps extends ConnectionLLMContextProps {
     connectionStatus: "connecting";
-};
+}
 
 interface ConnectedLLMContextProps extends ConnectionLLMContextProps {
     connectionStatus: "connected";
     client: Anthropic;
-};
+}
 
 export type LLMContextProps = DisconnectedLLMContextProps | ConnectingLLMContextProps | ConnectedLLMContextProps;
 

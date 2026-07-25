@@ -37,8 +37,7 @@ const AIConnectivityCard = () => {
                                 />
                                 <button
                                     type="button"
-                                    className="ui-button ui-button-primary ui-button-rect"
-                                >
+                                    className="ui-button ui-button-primary ui-button-rect">
                                     Connect
                                 </button>
                             </div>
@@ -58,9 +57,9 @@ const AIConnectivityCard = () => {
                                     <p className="text-[0.62rem] font-semibold uppercase tracking-[0.22em] text-[#8a7c84]">
                                         Model Selection
                                     </p>
-                                    <select className="ui-input mt-2"
-                                        defaultValue="gpt-5.4-mini"
-                                    >
+                                    <select
+                                        className="ui-input mt-2"
+                                        defaultValue="gpt-5.4-mini">
                                         <option value="gpt-5.4-mini">GPT-5.4 mini</option>
                                         <option value="gpt-5.4">GPT-5.4</option>
                                         <option value="gpt-5.4-pro">GPT-5.4 Pro</option>
