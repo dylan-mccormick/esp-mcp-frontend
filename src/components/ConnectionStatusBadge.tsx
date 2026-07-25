@@ -8,12 +8,13 @@ type ConnectionStatusBadgeProps = {
 const statusLabel: Record<ConnectionState, string> = {
     connected: "Connected",
     "not connected": "Not connected",
-    connecting: "Connecting",
+    connecting: "Connecting"
 };
 
 const ConnectionStatusBadge = ({ status, label }: ConnectionStatusBadgeProps) => {
     return (
-        <span className={`connection-status connection-status--${status === "not connected" ? "not-connected" : status}`}>
+        <span
+            className={`connection-status connection-status--${status === "not connected" ? "not-connected" : status}`}>
             <span className="connection-status__dot" />
             {label ?? statusLabel[status]}
         </span>

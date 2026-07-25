@@ -18,5 +18,5 @@ interface NotificationContextProps {
 export const NotificationContext = createContext<NotificationContextProps>({
     notifications: [],
     notify: () => {},
-    dismiss: () => {},
+    dismiss: () => {}
 });

@@ -1,22 +1,22 @@
 import { Cable, Cpu, Wifi } from "lucide-react";
-
-import ConnectionStatusBadge from "./ConnectionStatusBadge";
 import { useCallback, useContext, useState } from "react";
+
 import { MCPServerContext } from "../context/MCPServerContext";
+import ConnectionStatusBadge from "./ConnectionStatusBadge";
 
 const MicrocontrollerCard = () => {
-
     // Context
-    const { connect, connectionStatus, setIpAddress, ipAddress, deviceName, wifiSSID, sessionUUID } = useContext(MCPServerContext);
+    const { connect, connectionStatus, setIpAddress, ipAddress, deviceName, wifiSSID, sessionUUID } =
+        useContext(MCPServerContext);
 
     // State
-    const [ enteredIpAddress, setEnteredIpAddress ] = useState<string>(ipAddress ?? "");
+    const [enteredIpAddress, setEnteredIpAddress] = useState<string>(ipAddress ?? "");
 
     // Connect sig
     const attemptConnection = useCallback(() => {
         setIpAddress(enteredIpAddress);
         connect();
-    }, [ enteredIpAddress ]);
+    }, [enteredIpAddress]);
 
     return (
         <section className="rounded-4xl border border-white/70 bg-[rgba(255,255,255,0.76)] p-5 shadow-[0_18px_50px_rgba(36,27,37,0.08)] backdrop-blur-md sm:p-6">
@@ -31,12 +31,10 @@ const MicrocontrollerCard = () => {
                             <p className="text-[0.68rem] font-semibold uppercase tracking-[0.3em] text-[#7b6a76]">
                                 Microcontroller
                             </p>
-                            <h2 className="mt-2 text-xl font-semibold tracking-[-0.03em] text-[#241b25]">
-                                MCP Server
-                            </h2>
+                            <h2 className="mt-2 text-xl font-semibold tracking-[-0.03em] text-[#241b25]">MCP Server</h2>
                         </div>
 
-                        <ConnectionStatusBadge status={ connectionStatus } />
+                        <ConnectionStatusBadge status={connectionStatus} />
                     </div>
 
                     <div className="mt-5 grid gap-4 lg:grid-cols-[1.35fr_0.85fr]">
@@ -47,16 +45,15 @@ const MicrocontrollerCard = () => {
                             <div className="flex flex-col gap-3 sm:flex-row">
                                 <input
                                     type="text"
-                                    defaultValue={ ipAddress }
-                                    onChange={ e => setEnteredIpAddress(e.target.value) }
+                                    defaultValue={ipAddress}
+                                    onChange={e => setEnteredIpAddress(e.target.value)}
                                     className="ui-input flex-1"
                                 />
                                 <button
                                     type="button"
                                     className="ui-button ui-button-primary ui-button-rect"
                                     onClick={attemptConnection}
-                                    disabled={connectionStatus === "connecting"}
-                                >
+                                    disabled={connectionStatus === "connecting"}>
                                     Connect
                                 </button>
                             </div>
@@ -66,7 +63,9 @@ const MicrocontrollerCard = () => {
                                     <p className="text-[0.62rem] font-semibold uppercase tracking-[0.22em] text-[#8a7c84]">
                                         Session UUID
                                     </p>
-                                    <p className="text-sm font-medium text-[#241b25]">{ sessionUUID ?? "Not Connected" }</p>
+                                    <p className="text-sm font-medium text-[#241b25]">
+                                        {sessionUUID ?? "Not Connected"}
+                                    </p>
                                 </div>
                             </div>
                         </div>
@@ -80,11 +79,11 @@ const MicrocontrollerCard = () => {
                                 <div className="mt-3 space-y-2 text-sm text-[#2f2531]">
                                     <div className="flex items-center justify-between gap-3">
                                         <span className="text-[#75646f]">Device</span>
-                                        <span>{ deviceName }</span>
+                                        <span>{deviceName}</span>
                                     </div>
                                     <div className="flex items-center justify-between gap-3">
                                         <span className="text-[#75646f]">IP Address</span>
-                                        <span>{ ipAddress }</span>
+                                        <span>{ipAddress}</span>
                                     </div>
                                 </div>
                             </div>
@@ -93,7 +92,7 @@ const MicrocontrollerCard = () => {
                                     <Wifi className="h-4 w-4" />
                                     Wi-Fi SSID
                                 </div>
-                                <p className="text-sm font-medium text-[#241b25]">{ wifiSSID }</p>
+                                <p className="text-sm font-medium text-[#241b25]">{wifiSSID}</p>
                             </div>
                         </div>
                     </div>
