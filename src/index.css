@@ -56,6 +56,11 @@ body {
     outline-offset: 2px;
 }
 
+.ui-button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
 .ui-button-pill {
     padding: 0.52rem 1rem;
     font-size: 0.68rem;
