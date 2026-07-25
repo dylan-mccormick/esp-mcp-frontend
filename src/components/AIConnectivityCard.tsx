@@ -21,7 +21,7 @@ const AIConnectivityCard = () => {
                             </h2>
                         </div>
 
-                        <ConnectionStatusBadge status="not-connected" />
+                        <ConnectionStatusBadge status="not connected" />
                     </div>
 
                     <div className="mt-5 grid gap-4 lg:grid-cols-[1.2fr_0.9fr]">

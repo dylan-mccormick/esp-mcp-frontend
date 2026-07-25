@@ -10,7 +10,7 @@ type ConnectionManagerButtonProps = {
 
 const ConnectionManagerButton = ({ status, isConnected }: ConnectionManagerButtonProps) => {
     const navigate = useNavigate();
-    const resolvedStatus = status ?? (isConnected ? "connected" : "not-connected");
+    const resolvedStatus = status ?? (isConnected ? "connected" : "not connected");
 
     return (
         <button
