@@ -6,6 +6,9 @@ export type LLMConnectionStatus = "not connected" | "connecting" | "connected";
 interface BaseLLMContextProps {
     connect: () => void;
     connectionStatus: LLMConnectionStatus;
+    apiKey?: string;
+    maxTokens?: number;
+    model?: string;
     setApiKey: (s: string) => void;
     setMaxTokens: (n: number) => void;
     setModel: (s: string) => void;
@@ -13,9 +16,6 @@ interface BaseLLMContextProps {
 
 interface DisconnectedLLMContextProps extends BaseLLMContextProps {
     connectionStatus: "not connected";
-    apiKey?: string;
-    maxTokens?: number;
-    model?: string;
 }
 
 export interface ConnectionLLMContextProps extends BaseLLMContextProps {
