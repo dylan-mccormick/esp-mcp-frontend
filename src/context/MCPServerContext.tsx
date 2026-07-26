@@ -1,3 +1,4 @@
+import { Client } from "@modelcontextprotocol/client";
 import { createContext } from "react";
 
 export type MCPServerConnectionStatus = "not connected" | "connecting" | "connected";
@@ -34,6 +35,7 @@ export interface ConnectedMCPServerContextProps extends ConnectionMCPServerConte
     sessionUUID: string;
     deviceName: string;
     wifiSSID: string;
+    mcp: Client;
 }
 
 export type MCPServerContextProps =
