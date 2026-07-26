@@ -13,6 +13,7 @@ interface BaseLLMContextProps {
     setApiKey: (s: string) => void;
     setMaxTokens: (n: number) => void;
     setModel: (s: string) => void;
+    setRemainingTokens: (n: number) => void;
 }
 
 interface DisconnectedLLMContextProps extends BaseLLMContextProps {
@@ -41,5 +42,6 @@ export const LLMContext = createContext<LLMContextProps>({
     connectionStatus: "not connected",
     setApiKey: () => {},
     setMaxTokens: () => {},
-    setModel: () => {}
+    setModel: () => {},
+    setRemainingTokens: () => {}
 });

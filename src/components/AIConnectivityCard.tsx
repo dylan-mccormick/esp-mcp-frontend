@@ -36,6 +36,8 @@ const AIConnectivityCard = () => {
             notify("error", "max_tokens must be set to a number between 1 and 64,000.");
             return;
         }
+
+        setMaxTokensInput(result);
     };
 
     // Dynamically update model/maxTokens without reconnecting

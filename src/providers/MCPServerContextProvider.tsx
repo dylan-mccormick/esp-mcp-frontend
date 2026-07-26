@@ -31,10 +31,11 @@ const MCPServerContextProvider = ({ children }: { children: ReactNode }) => {
     // Fires when we were previously waiting for the LLM to connect
     useEffect(() => {
         if (llmConnectionStatus == "connected" && waitingForLLMToConnect) {
+            setWaitingforLLMToConnect(false);
             notify("info", "Resuming connection attempt with the MCP server...");
             establishMCPConnection();
         }
-    }, [llmConnectionStatus]);
+    }, [llmConnectionStatus, waitingForLLMToConnect]);
 
     // MCP Client state management
     useEffect(() => {
@@ -69,7 +70,7 @@ const MCPServerContextProvider = ({ children }: { children: ReactNode }) => {
                 notify("error", "Failed to obtain information about the MCP server.");
                 setConnectionStatus("not connected");
             });
-    }, [connectionStatus, ipAddress]);
+    }, [connectionStatus, llmConnectionStatus, ipAddress]);
 
     // Attempt connection
     const connect = () => {

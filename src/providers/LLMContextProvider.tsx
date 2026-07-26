@@ -27,7 +27,7 @@ const LLMContextProvider = ({ children }: { children: ReactNode }) => {
         );
         setConnectionStatus("connected");
         notify("info", "Connected to the LLM model.");
-    }, [apiKey, connectionStatus]);
+    }, [apiKey]);
 
     return (
         <LLMContext.Provider
@@ -43,7 +43,8 @@ const LLMContextProvider = ({ children }: { children: ReactNode }) => {
                           client,
                           setApiKey,
                           setMaxTokens,
-                          setModel
+                          setModel,
+                          setRemainingTokens
                       }
                     : {
                           connect,
@@ -53,7 +54,8 @@ const LLMContextProvider = ({ children }: { children: ReactNode }) => {
                           model,
                           setApiKey,
                           setMaxTokens,
-                          setModel
+                          setModel,
+                          setRemainingTokens
                       }
             }>
             {children}
