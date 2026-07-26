@@ -28,7 +28,8 @@ const MCPServerContextProvider = ({ children }: { children: ReactNode }) => {
     const { mcpGet } = useMCPFetch(ipAddress);
 
     const establishMCPConnection = async () => {
-        if (connectionStatus !== "connecting" || llmCtx.connectionStatus !== "connected" || !mcpServerEndpoint) return setConnectionStatus("not connected");
+        if (connectionStatus !== "connecting" || llmCtx.connectionStatus !== "connected" || !mcpServerEndpoint)
+            return setConnectionStatus("not connected");
 
         // Try to connect to the /mcp endpoint
         const transport = new StreamableHTTPClientTransport(new URL(`http://${ipAddress}${mcpServerEndpoint}`));
