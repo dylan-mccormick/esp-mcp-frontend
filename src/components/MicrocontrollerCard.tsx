@@ -3,6 +3,7 @@ import { useCallback, useContext, useState } from "react";
 
 import { MCPServerContext } from "../context/MCPServerContext";
 import ConnectionStatusBadge from "./ConnectionStatusBadge";
+import UnfocusOnEnterInput from "./UnfocusOnEnterInput";
 
 const MicrocontrollerCard = () => {
     // Context
@@ -43,10 +44,12 @@ const MicrocontrollerCard = () => {
                                 IP address
                             </label>
                             <div className="flex flex-col gap-3 sm:flex-row">
-                                <input
+                                <UnfocusOnEnterInput
                                     type="text"
                                     defaultValue={ipAddress}
                                     onChange={e => setEnteredIpAddress(e.target.value)}
+                                    onEnterPressed={attemptConnection}
+                                    disabled={connectionStatus === "connecting"}
                                     className="ui-input flex-1"
                                 />
                                 <button

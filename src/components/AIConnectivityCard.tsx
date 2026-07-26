@@ -1,8 +1,56 @@
 import { Bot, Sparkles } from "lucide-react";
+import { useCallback, useContext, useEffect, useState } from "react";
 
+import { LLMContext } from "../context/LLMContext";
+import { NotificationContext } from "../context/NotificationContext";
 import ConnectionStatusBadge from "./ConnectionStatusBadge";
+import UnfocusOnEnterInput from "./UnfocusOnEnterInput";
 
 const AIConnectivityCard = () => {
+    // Context
+    const { notify } = useContext(NotificationContext);
+    const { connect, connectionStatus, maxTokens, remainingTokens, setMaxTokens, apiKey, setApiKey, model, setModel } =
+        useContext(LLMContext);
+
+    // Input
+    const [apiKeyInput, setApiKeyInput] = useState<string>(apiKey ?? "");
+    const [maxTokensInput, setMaxTokensInput] = useState<number>(maxTokens ?? 1024);
+    const [modelInput, setModelInput] = useState<string>(model ?? "");
+
+    // Actions
+    const connectButtonClicked = useCallback(() => {
+        setApiKey(apiKeyInput);
+        setMaxTokens(maxTokensInput);
+        setModel(modelInput);
+        connect();
+    }, [apiKeyInput, maxTokensInput, modelInput]);
+
+    const changeMaxTokens = (newMaxTokens: string) => {
+        const result = parseInt(newMaxTokens);
+        if (Number.isNaN(result)) {
+            notify("error", "Enter a valid number.");
+            return;
+        }
+
+        if (result < 1 || result > 64000) {
+            notify("error", "max_tokens must be set to a number between 1 and 64,000.");
+            return;
+        }
+    };
+
+    // Dynamically update model/maxTokens without reconnecting
+    useEffect(() => {
+        if (connectionStatus !== "connected" || maxTokensInput == maxTokens) return;
+        setMaxTokens(maxTokensInput);
+        notify("info", `Dynamically updated Max Tokens to ${maxTokensInput}`);
+    }, [connectionStatus, maxTokens, maxTokensInput]);
+
+    useEffect(() => {
+        if (connectionStatus !== "connected" || modelInput == model) return;
+        setModel(modelInput);
+        notify("info", `Dynamically updated Model to ${modelInput}`);
+    }, [connectionStatus, model, modelInput]);
+
     return (
         <section className="rounded-4xl border border-white/70 bg-[rgba(255,255,255,0.76)] p-5 shadow-[0_18px_50px_rgba(36,27,37,0.08)] backdrop-blur-md sm:p-6">
             <div className="flex items-start gap-4">
@@ -21,7 +69,7 @@ const AIConnectivityCard = () => {
                             </h2>
                         </div>
 
-                        <ConnectionStatusBadge status="not connected" />
+                        <ConnectionStatusBadge status={connectionStatus} />
                     </div>
 
                     <div className="mt-5 grid gap-4 lg:grid-cols-[1.2fr_0.9fr]">
@@ -30,14 +78,19 @@ const AIConnectivityCard = () => {
                                 API key
                             </label>
                             <div className="flex flex-col gap-3 sm:flex-row">
-                                <input
+                                <UnfocusOnEnterInput
                                     type="password"
-                                    defaultValue="sk-demo-key-123456789"
+                                    defaultValue={apiKey}
+                                    disabled={connectionStatus === "connecting"}
+                                    onChange={e => setApiKeyInput(e.target.value)}
+                                    onEnterPressed={connectButtonClicked}
                                     className="ui-input"
                                 />
                                 <button
                                     type="button"
-                                    className="ui-button ui-button-primary ui-button-rect">
+                                    className="ui-button ui-button-primary ui-button-rect"
+                                    disabled={connectionStatus === "connecting"}
+                                    onClick={connectButtonClicked}>
                                     Connect
                                 </button>
                             </div>
@@ -47,9 +100,11 @@ const AIConnectivityCard = () => {
                                     <p className="text-[0.62rem] font-semibold uppercase tracking-[0.22em] text-[#8a7c84]">
                                         Max Tokens
                                     </p>
-                                    <input
+                                    <UnfocusOnEnterInput
                                         type="url"
-                                        defaultValue="1024"
+                                        defaultValue={maxTokens}
+                                        onBlur={e => changeMaxTokens(e.target.value)}
+                                        disabled={connectionStatus === "connecting"}
                                         className="ui-input mt-2"
                                     />
                                 </div>
@@ -59,10 +114,13 @@ const AIConnectivityCard = () => {
                                     </p>
                                     <select
                                         className="ui-input mt-2"
-                                        defaultValue="gpt-5.4-mini">
-                                        <option value="gpt-5.4-mini">GPT-5.4 mini</option>
-                                        <option value="gpt-5.4">GPT-5.4</option>
-                                        <option value="gpt-5.4-pro">GPT-5.4 Pro</option>
+                                        defaultValue={model}
+                                        onBlur={e => setModelInput(e.target.value)}
+                                        disabled={connectionStatus === "connecting"}>
+                                        <option value="claude-haiku-4-5">Claude Haiku 4.5</option>
+                                        <option value="claude-sonnet-5">Claude Sonnet 5</option>
+                                        <option value="claude-opus-5">Claude Opus 5</option>
+                                        <option value="claude-fable-5">Claude Fable 5</option>
                                     </select>
                                 </div>
                             </div>
@@ -74,7 +132,7 @@ const AIConnectivityCard = () => {
                                     <Sparkles className="h-4 w-4" />
                                     Active Model
                                 </div>
-                                <p className="text-sm font-medium text-[#241b25]">GPT-5.4 mini</p>
+                                <p className="text-sm font-medium text-[#241b25]">{model}</p>
                             </div>
 
                             <div className="border-t border-[#e8e1e2] pt-4">
@@ -84,7 +142,7 @@ const AIConnectivityCard = () => {
                                 <div className="mt-3 space-y-2 text-sm text-[#2f2531]">
                                     <div className="flex items-center justify-between gap-3">
                                         <span className="text-[#75646f]">Remaining Tokens</span>
-                                        <span>12345</span>
+                                        <span>{remainingTokens ?? "Unknown"}</span>
                                     </div>
                                 </div>
                             </div>

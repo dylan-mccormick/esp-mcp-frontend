@@ -1,5 +1,6 @@
 import { useContext, useEffect, useState, type ReactNode } from "react";
 
+import { LLMContext } from "../context/LLMContext";
 import { MCPServerContext, type MCPServerConnectionStatus } from "../context/MCPServerContext";
 import { NotificationContext } from "../context/NotificationContext";
 import useMCPFetch from "../hooks/useMCPFetch";
@@ -7,6 +8,7 @@ import useMCPFetch from "../hooks/useMCPFetch";
 const MCPServerContextProvider = ({ children }: { children: ReactNode }) => {
     // Notifs Mgr
     const { notify } = useContext(NotificationContext);
+    const { connectionStatus: llmConnectionStatus } = useContext(LLMContext);
 
     // Connection details state management
     const [connectionStatus, setConnectionStatus] = useState<MCPServerConnectionStatus>("not connected");
@@ -15,11 +17,24 @@ const MCPServerContextProvider = ({ children }: { children: ReactNode }) => {
     const [deviceName, setDeviceName] = useState<string>("");
     const [wifiSSID, setWifiSSID] = useState<string>("");
 
+    const [waitingForLLMToConnect, setWaitingforLLMToConnect] = useState(false);
+
     // API Client
     const { mcpGet } = useMCPFetch(ipAddress);
 
-    // MCP Connect
-    // const mcpConnect = async () => {};
+    const establishMCPConnection = () => {
+        if (connectionStatus !== "connecting") return;
+        notify("info", "Connected to the MCP server.");
+        setConnectionStatus("connected");
+    };
+
+    // Fires when we were previously waiting for the LLM to connect
+    useEffect(() => {
+        if (llmConnectionStatus == "connected" && waitingForLLMToConnect) {
+            notify("info", "Resuming connection attempt with the MCP server...");
+            establishMCPConnection();
+        }
+    }, [llmConnectionStatus]);
 
     // MCP Client state management
     useEffect(() => {
@@ -35,10 +50,19 @@ const MCPServerContextProvider = ({ children }: { children: ReactNode }) => {
                 setDeviceName(data.deviceName);
                 setWifiSSID(data.wifiSSID);
 
-                // TODO: establish the MCP connection
-                //mcpConnect();
-                // TODO: for now, let's just say "connected" (testing purposes)
-                setConnectionStatus("connected");
+                // Wait until Anthropic client is connected
+                // We need to do this before connecting to the MCP server
+                if (llmConnectionStatus !== "connected") {
+                    notify(
+                        "warning",
+                        "The MCP Server has been found, but the LLM client is not yet connected. Please connect to the LLM client and the MCP connection will automatically resume.",
+                        8000
+                    );
+                    setWaitingforLLMToConnect(true);
+                    return;
+                }
+
+                establishMCPConnection();
             })
             .catch(err => {
                 console.error(`Failed to refresh the MCP Server /info endpoint`, err);

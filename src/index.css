@@ -116,6 +116,11 @@ body {
     outline-offset: 1px;
 }
 
+.ui-input:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
 .connection-status {
     display: inline-flex;
     align-items: center;

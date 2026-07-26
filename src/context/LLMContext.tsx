@@ -7,6 +7,7 @@ interface BaseLLMContextProps {
     connect: () => void;
     connectionStatus: LLMConnectionStatus;
     apiKey?: string;
+    remainingTokens?: number;
     maxTokens?: number;
     model?: string;
     setApiKey: (s: string) => void;
