@@ -33,11 +33,15 @@ const MCPServerContextProvider = ({ children }: { children: ReactNode }) => {
 
         // Try to connect to the /mcp endpoint
         const transport = new StreamableHTTPClientTransport(new URL(`http://${ipAddress}${mcpServerEndpoint}`));
-        const mcpObject = new Client({
-            name: "ESP-MCP Client",
-            description: "React frontend with an MCP Client component, connected directly to an LLM via the browser.",
-            version: "1.0.0"
-        });
+        const mcpObject = new Client(
+            {
+                name: "ESP-MCP Client",
+                description:
+                    "React frontend with an MCP Client component, connected directly to an LLM via the browser.",
+                version: "1.0.0"
+            },
+            { versionNegotiation: { mode: "auto" } }
+        );
 
         try {
             await mcpObject.connect(transport);
@@ -64,7 +68,7 @@ const MCPServerContextProvider = ({ children }: { children: ReactNode }) => {
 
     // MCP Client state management
     useEffect(() => {
-        if (connectionStatus === "not connected") return;
+        if (connectionStatus !== "connecting") return;
         mcpGet(`/info`)
             .then(async res => {
                 if (!res.ok) {

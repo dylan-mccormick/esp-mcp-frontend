@@ -13,7 +13,7 @@
     },
     "dependencies": {
         "@anthropic-ai/sdk": "^0.112.4",
-        "@modelcontextprotocol/client": "2.0.0-beta.4",
+        "@modelcontextprotocol/client": "^2.0.0",
         "@tailwindcss/vite": "^4.3.3",
         "esp-mcp-frontend": "link:",
         "lucide-react": "^1.25.0",
