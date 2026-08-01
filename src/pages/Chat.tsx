@@ -14,7 +14,7 @@ const Chat = () => {
                         </h1>
                     </div>
 
-                    <ConnectionManagerButton isConnected={true} />
+                    <ConnectionManagerButton />
                 </header>
 
                 <section className="flex-1 space-y-5 pb-6"></section>
