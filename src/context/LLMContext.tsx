@@ -4,7 +4,7 @@ import { createContext } from "react";
 export type LLMConnectionStatus = "not connected" | "connecting" | "connected";
 
 interface BaseLLMContextProps {
-    connect: () => void;
+    connect: (s: string) => void;
     connectionStatus: LLMConnectionStatus;
     apiKey?: string;
     remainingTokens?: number;

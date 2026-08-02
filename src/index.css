@@ -1,4 +1,6 @@
 @import "tailwindcss";
+@plugin "@tailwindcss/typography";
+@import "highlight.js/styles/github-dark.css";
 
 @theme {
     --color-light-shade: #e6dddd;
@@ -6,6 +8,12 @@
     --color-main-brand: #53364d;
     --color-dark-accent: #896f90;
     --color-dark-shade: #1c141d;
+}
+
+@theme {
+    --tw-prose-links: #3a7ec4;
+    --tw-prose-code: #241b25;
+    --tw-prose-headings: #241b25;
 }
 
 html {
