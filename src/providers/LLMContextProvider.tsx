@@ -1,5 +1,5 @@
 import Anthropic from "@anthropic-ai/sdk";
-import { useCallback, useContext, useState, type ReactNode } from "react";
+import { useContext, useState, type ReactNode } from "react";
 
 import { LLMContext, type LLMConnectionStatus } from "../context/LLMContext";
 import { NotificationContext } from "../context/NotificationContext";
@@ -17,17 +17,17 @@ const LLMContextProvider = ({ children }: { children: ReactNode }) => {
     const [client, setClient] = useState<Anthropic>();
 
     // Method to initiate a connection
-    const connect = useCallback(() => {
+    const connect = (key: string) => {
         setConnectionStatus("connecting");
         setClient(
             new Anthropic({
-                apiKey,
+                apiKey: key,
                 dangerouslyAllowBrowser: true // TODO: remove this for any prod systems!!
             })
         );
         setConnectionStatus("connected");
         notify("info", "Connected to the LLM model.");
-    }, [apiKey]);
+    };
 
     return (
         <LLMContext.Provider

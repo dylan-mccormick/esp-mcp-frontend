@@ -22,7 +22,7 @@ const AIConnectivityCard = () => {
         setApiKey(apiKeyInput);
         setMaxTokens(maxTokensInput);
         setModel(modelInput);
-        connect();
+        connect(apiKeyInput);
     }, [apiKeyInput, maxTokensInput, modelInput]);
 
     const changeMaxTokens = (newMaxTokens: string) => {

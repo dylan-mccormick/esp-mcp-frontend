@@ -10,7 +10,7 @@ const UnfocusOnEnterInput = (
     const inputRef = useRef(null);
 
     const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-        if (e.key == "Enter") {
+        if (e.key == "Enter" && !e.shiftKey) {
             (e.target as HTMLInputElement).blur();
             if (!props.onEnterPressed) return;
             props.onEnterPressed(e);
