@@ -3,15 +3,16 @@ import { type ReactNode } from "react";
 import ReactMarkdown from "react-markdown";
 import rehypeHighlight from "rehype-highlight";
 import remarkGfm from "remark-gfm";
+import type { BaseChatMessage } from "../context/ChatContext";
+import ToolUsageBubble from "./ToolUsageBubble";
 
-export type AssistantMessageProps = {
-    message?: string;
-    sender: "assistant";
-    sentBy?: string;
+export interface AssistantMessageProps extends BaseChatMessage {
+    role: "assistant";
+    model: string;
     children?: ReactNode;
 };
 
-const AssistantMessage = ({ message, sentBy = "LLM", children }: AssistantMessageProps) => {
+const AssistantMessage = ({ content, model, children }: AssistantMessageProps) => {
 
     return (
         <div className="flex justify-start py-2">
@@ -20,10 +21,34 @@ const AssistantMessage = ({ message, sentBy = "LLM", children }: AssistantMessag
                     <span className="inline-flex h-8 w-8 items-center justify-center rounded-full border border-[#d6cbcd] bg-white text-[0.62rem] font-semibold tracking-[0.24em] text-[#241b25]">
                         <Cpu className="h-4 w-4" />
                     </span>
-                    <span>{sentBy}</span>
+                    <span>{ model }</span>
                 </div>
 
-                {message ? <div className="prose prose-sm max-w-none"><ReactMarkdown remarkPlugins={[ remarkGfm ]} rehypePlugins={[ rehypeHighlight ]} >{message}</ReactMarkdown></div> : null}
+                {content.map(data => {
+                    switch (data.type) {
+                        case "text":
+                            return <><div className="prose prose-sm max-w-none">
+                                <ReactMarkdown
+                                    remarkPlugins={[remarkGfm]}
+                                    rehypePlugins={[rehypeHighlight]}>
+                                    {data.text}
+                                </ReactMarkdown>
+                            </div></>
+                        case "tool_use":
+                            return <ToolUsageBubble
+                                title={data.name}
+                                subtitle={data.id}
+                            />
+                        case "tool_result":
+                            return <div className="prose prose-sm max-w-none">
+                                <ReactMarkdown
+                                    remarkPlugins={[remarkGfm]}
+                                    rehypePlugins={[rehypeHighlight]}>
+                                    {data.content}
+                                </ReactMarkdown>
+                            </div>
+                    }
+                })}
 
                 {children ? <div className="mt-4 space-y-4">{children}</div> : null}
             </div>

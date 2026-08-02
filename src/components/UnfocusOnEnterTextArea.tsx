@@ -24,7 +24,13 @@ const UnfocusOnEnterTextArea = (
         el.style.height = `${el.scrollHeight}px`;
     }, [props.value]);
 
-    return <textarea ref={textareaRef} onKeyDown={handleKeyDown} {...props} />;
+    return (
+        <textarea
+            ref={textareaRef}
+            onKeyDown={handleKeyDown}
+            {...props}
+        />
+    );
 };
 
 export default UnfocusOnEnterTextArea;

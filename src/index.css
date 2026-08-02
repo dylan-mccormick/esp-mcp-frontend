@@ -11,9 +11,9 @@
 }
 
 @theme {
-  --tw-prose-links: #3a7ec4;
-  --tw-prose-code: #241b25;
-  --tw-prose-headings: #241b25;
+    --tw-prose-links: #3a7ec4;
+    --tw-prose-code: #241b25;
+    --tw-prose-headings: #241b25;
 }
 
 html {

@@ -1,5 +1,5 @@
 import { useCallback, useState } from "react";
-import UnfocusOnEnterInput from "./UnfocusOnEnterInput";
+
 import UnfocusOnEnterTextArea from "./UnfocusOnEnterTextArea";
 
 interface ChatComposerProps {
@@ -8,13 +8,12 @@ interface ChatComposerProps {
 }
 
 const ChatComposer = ({ onSendMessage, sending }: ChatComposerProps) => {
-
-    const [ inputLine, setInputLine ] = useState<string>("");
+    const [inputLine, setInputLine] = useState<string>("");
 
     const sendMessage = useCallback(() => {
         onSendMessage(inputLine);
         setInputLine("");
-    }, [ inputLine ])
+    }, [inputLine]);
 
     return (
         <div className="rounded-[1.75rem] border border-white/70 bg-[rgba(255,255,255,0.72)] p-3 shadow-[0_18px_50px_rgba(36,27,37,0.1)] backdrop-blur-md">

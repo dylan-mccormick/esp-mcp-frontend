@@ -3,7 +3,7 @@ type ToolUsageBubbleProps = {
     subtitle: string;
     progress?: number;
     status?: "running" | "completed" | "error";
-    outputLines: string[];
+    outputLines?: string[];
 };
 
 const ToolUsageBubble = ({ title, subtitle, progress, status = "running", outputLines }: ToolUsageBubbleProps) => {
@@ -48,7 +48,8 @@ const ToolUsageBubble = ({ title, subtitle, progress, status = "running", output
                         Output
                     </span>
                 </div>
-                <div className="space-y-2 px-4 py-4 font-mono text-[0.78rem] leading-6 text-[#e8dfde]">
+                { outputLines && outputLines.length > 0 &&
+                    <div className="space-y-2 px-4 py-4 font-mono text-[0.78rem] leading-6 text-[#e8dfde]">
                     {outputLines.map((line, index) => (
                         <div
                             key={`${line}-${index}`}
@@ -57,7 +58,7 @@ const ToolUsageBubble = ({ title, subtitle, progress, status = "running", output
                             <span className="wrap-break-word text-white/86">{line}</span>
                         </div>
                     ))}
-                </div>
+                    </div>}
             </div>
         </div>
     );
