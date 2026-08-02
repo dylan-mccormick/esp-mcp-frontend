@@ -72,9 +72,9 @@ const Chat = () => {
         setMessageSending(true);
 
         try {
-            let conversationHistory: BaseChatMessage[] = [
-                ...messages.map(m => ({ id: m.id, role: m.role, content: m.content })),
-                { id: userMessage.id, role: userMessage.role, content: userMessage.content }
+            let conversationHistory: (Omit<BaseChatMessage, "id">)[] = [
+                ...messages.map(m => ({ role: m.role, content: m.content })),
+                { role: userMessage.role, content: userMessage.content }
             ];
 
             let cont = true;
@@ -150,7 +150,7 @@ const Chat = () => {
                     return [...prev, newAssistantMessage]
                 });
 
-                conversationHistory = [ ...conversationHistory, { id: assistantMessageId, role: "assistant", content: assistantBlocks } ];
+                conversationHistory = [ ...conversationHistory, { role: "assistant", content: assistantBlocks } ];
 
                 const toolUseBlocks = assistantBlocks.filter(b => b.type === "tool_use");
                 if (toolUseBlocks.length === 0) { // if we don't need to use any tools, just stop
@@ -184,7 +184,7 @@ const Chat = () => {
                     timeRef: new Date()
                 };
                 addMessage(toolResultMessage);
-                conversationHistory = [ ...conversationHistory, { id: toolResultMessage.id, role: "user", content: toolResults } ]
+                conversationHistory = [ ...conversationHistory, { role: "user", content: toolResults } ]
             }
         } catch (error) {
             notify("error", "Unable to send LLM message.");
