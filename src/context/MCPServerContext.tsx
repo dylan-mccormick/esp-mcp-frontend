@@ -1,4 +1,4 @@
-import { Client } from "@modelcontextprotocol/client";
+import { Client, type Prompt, type Resource, type Tool } from "@modelcontextprotocol/client";
 import { createContext } from "react";
 
 export type MCPServerConnectionStatus = "not connected" | "connecting" | "connected";
@@ -32,6 +32,9 @@ interface ConnectingMCPServerContextProps extends ConnectionMCPServerContextProp
 
 export interface ConnectedMCPServerContextProps extends ConnectionMCPServerContextProps {
     connectionStatus: "connected";
+    tools: Tool[];
+    resources: Resource[];
+    prompts: Prompt[];
     sessionUUID: string;
     deviceName: string;
     wifiSSID: string;
