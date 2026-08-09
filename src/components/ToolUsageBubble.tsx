@@ -48,17 +48,20 @@ const ToolUsageBubble = ({ title, subtitle, progress, status = "running", output
                         Output
                     </span>
                 </div>
-                { outputLines && outputLines.length > 0 &&
+                {outputLines && outputLines.length > 0 && (
                     <div className="space-y-2 px-4 py-4 font-mono text-[0.78rem] leading-6 text-[#e8dfde]">
-                    {outputLines.map((line, index) => (
-                        <div
-                            key={`${line}-${index}`}
-                            className="flex gap-3">
-                            <span className="w-9 flex-none text-white/28">{String(index + 1).padStart(2, "0")}</span>
-                            <span className="wrap-break-word text-white/86">{line}</span>
-                        </div>
-                    ))}
-                    </div>}
+                        {outputLines.map((line, index) => (
+                            <div
+                                key={`${line}-${index}`}
+                                className="flex gap-3">
+                                <span className="w-9 flex-none text-white/28">
+                                    {String(index + 1).padStart(2, "0")}
+                                </span>
+                                <span className="wrap-break-word text-white/86">{line}</span>
+                            </div>
+                        ))}
+                    </div>
+                )}
             </div>
         </div>
     );
