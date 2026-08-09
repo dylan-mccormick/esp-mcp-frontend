@@ -6,7 +6,13 @@ import AssistantMessage, { type AssistantMessageProps } from "../components/Assi
 import ChatComposer from "../components/ChatComposer";
 import ConnectionManagerButton from "../components/ConnectionManagerButton";
 import UserMessage, { type UserMessageProps } from "../components/UserMessage";
-import { ChatContext, type BaseChatMessage, type ContentBlock, type ToolResultBlock } from "../context/ChatContext";
+import {
+    ChatContext,
+    type BaseChatMessage,
+    type ContentBlock,
+    type ToolResultBlock,
+    type ToolUseBlock
+} from "../context/ChatContext";
 import { LLMContext } from "../context/LLMContext";
 import { MCPServerContext } from "../context/MCPServerContext";
 import { NotificationContext } from "../context/NotificationContext";
@@ -21,35 +27,39 @@ const Chat = () => {
     // State
     const [messageSending, setMessageSending] = useState(false);
 
+    // Strip status/output
+    const toApiContent = (blocks: ContentBlock[]): ContentBlock[] =>
+        blocks.map(b => {
+            if (b.type !== "tool_use") return b;
+            const { status, output, ...apiSafe } = b;
+            return apiSafe;
+        });
+
     // Handling errors
     const handleAnthropicApiError = (error: APIError) => {
         switch (error.status) {
-                    case 401:
-                        notify(
-                            "error",
-                            "Unable to authenticate. This is most likely because your API key is incorrect. Verify that you are using the correct API key.",
-                            8000
-                        );
-                        break;
-                    case 429:
-                        notify(
-                            "error",
-                            "You are being rate limited by the LLM. Please wait a few minutes and try again.",
-                            6000
-                        );
-                        break;
-                    case 500:
-                        notify(
-                            "error",
-                            "An internal server error (of the LLM) has occured. Please try again later.",
-                            6000
-                        );
-                        break;
-                    default:
-                        notify("error", "An unknown error occured.");
-                        console.error("Unable to send LLM message", error);
-                }
-            };
+            case 401:
+                notify(
+                    "error",
+                    "Unable to authenticate. This is most likely because your API key is incorrect. Verify that you are using the correct API key.",
+                    8000
+                );
+                break;
+            case 429:
+                notify(
+                    "error",
+                    "You are being rate limited by the LLM. Please wait a few minutes and try again.",
+                    6000
+                );
+                break;
+            case 500:
+                notify("error", "An internal server error (of the LLM) has occured. Please try again later.", 6000);
+                break;
+            default:
+                notify("error", "An unknown error occured.");
+                console.error("Unable to send LLM message", error);
+        }
+    };
 
     // Scroll to bottom when a message is sent
     useEffect(() => {
@@ -72,8 +82,8 @@ const Chat = () => {
         setMessageSending(true);
 
         try {
-            let conversationHistory: (Omit<BaseChatMessage, "id">)[] = [
-                ...messages.map(m => ({ role: m.role, content: m.content })),
+            let conversationHistory: Omit<BaseChatMessage, "id">[] = [
+                ...messages.map(m => ({ role: m.role, content: toApiContent(m.content) })),
                 { role: userMessage.role, content: userMessage.content }
             ];
 
@@ -86,49 +96,55 @@ const Chat = () => {
                         return;
                     }
 
-                    llmCtx.client.messages.stream({
-                        max_tokens: llmCtx.maxTokens,
-                        messages: conversationHistory,
-                        model: llmCtx.model,
-                        cache_control: { type: "ephemeral" }
-                    })
-                    .on("text", text => {
-                        // Render new assistant text
-                        setMessages(prev => {
-                            const last = prev[prev.length - 1];
-
-                            // Text being appended to previous message
-                            if (last.id === assistantMessageId && last.role == "assistant") {
-                                const blocks = [...last.content];
-                                const lastBlock = blocks[blocks.length - 1];
-                                if (lastBlock.type === "text") {
-                                    blocks[blocks.length - 1] = { ...lastBlock, text: lastBlock.text + text }
-                                } else {
-                                    blocks.push({ type: "text", text });
-                                }
-                                return [ ...prev.slice(0, -1), { ...last, content: blocks } ]
-                            }
-
-                            // Update message
-                            const newAssistantMessage: AssistantMessageProps = {
-                                id: assistantMessageId,
-                                role: "assistant",
-                                model: llmCtx.model,
-                                content: [{ type: "text", text }]
-                            };
-
-                            return [...prev, newAssistantMessage]
+                    llmCtx.client.messages
+                        .stream({
+                            max_tokens: llmCtx.maxTokens,
+                            messages: conversationHistory,
+                            model: llmCtx.model,
+                            tools: mcpCtx.tools.map(t => ({
+                                name: t.name,
+                                description: t.description,
+                                input_schema: t.inputSchema
+                            })),
+                            cache_control: { type: "ephemeral" }
                         })
-                    })
-                    .on("message", final => resolve(final))
-                    .on("error", err => {
-                        if (err instanceof APIError) {
-                            handleAnthropicApiError(err);
+                        .on("text", text => {
+                            // Render new assistant text
+                            setMessages(prev => {
+                                const last = prev[prev.length - 1];
+
+                                // Text being appended to previous message
+                                if (last.id === assistantMessageId && last.role == "assistant") {
+                                    const blocks = [...last.content];
+                                    const lastBlock = blocks[blocks.length - 1];
+                                    if (lastBlock.type === "text") {
+                                        blocks[blocks.length - 1] = { ...lastBlock, text: lastBlock.text + text };
+                                    } else {
+                                        blocks.push({ type: "text", text });
+                                    }
+                                    return [...prev.slice(0, -1), { ...last, content: blocks }];
+                                }
+
+                                // Update message
+                                const newAssistantMessage: AssistantMessageProps = {
+                                    id: assistantMessageId,
+                                    role: "assistant",
+                                    model: llmCtx.model,
+                                    content: [{ type: "text", text }]
+                                };
+
+                                return [...prev, newAssistantMessage];
+                            });
+                        })
+                        .on("message", final => resolve(final))
+                        .on("error", err => {
+                            if (err instanceof APIError) {
+                                handleAnthropicApiError(err);
+                                reject(err);
+                                return;
+                            }
                             reject(err);
-                            return;
-                        }
-                        reject(err);
-                    });
+                        });
                 });
 
                 const assistantBlocks = finalMessage.content as ContentBlock[];
@@ -138,7 +154,7 @@ const Chat = () => {
                 setMessages(prev => {
                     const last = prev[prev.length - 1];
                     if (last.id === assistantMessageId && last.role === "assistant") {
-                        return [ ...prev.slice(0, -1), { ...last, content: assistantBlocks } ]
+                        return [...prev.slice(0, -1), { ...last, content: assistantBlocks }];
                     }
 
                     const newAssistantMessage: AssistantMessageProps = {
@@ -147,35 +163,69 @@ const Chat = () => {
                         model: llmCtx.model,
                         content: assistantBlocks
                     };
-                    return [...prev, newAssistantMessage]
+                    return [...prev, newAssistantMessage];
                 });
 
-                conversationHistory = [ ...conversationHistory, { role: "assistant", content: assistantBlocks } ];
+                conversationHistory = [...conversationHistory, { role: "assistant", content: assistantBlocks }];
 
                 const toolUseBlocks = assistantBlocks.filter(b => b.type === "tool_use");
-                if (toolUseBlocks.length === 0) { // if we don't need to use any tools, just stop
+                if (toolUseBlocks.length === 0) {
+                    // if we don't need to use any tools, just stop
                     cont = false;
                     break;
                 }
 
                 // we need to use a tool
-                const toolResults: ToolResultBlock[] = await Promise.all(toolUseBlocks.map(async block => {
-                    try {
-                        const response = await mcpCtx.mcp.callTool({ name: block.name }, block.input);
-                        return {
-                            type: "tool_result",
-                            tool_use_id: block.id,
-                            content: JSON.stringify(response)
-                        } satisfies ToolResultBlock;
-                    } catch (err) {
-                        return {
-                            type: "tool_result",
-                            tool_use_id: block.id,
-                            content: err instanceof Error ? err.message : "Tool call failed",
-                            is_error: true
-                        } satisfies ToolResultBlock;
-                    }
-                }));
+                const toolResults: ToolResultBlock[] = await Promise.all(
+                    toolUseBlocks.map(async block => {
+                        try {
+                            const response = await mcpCtx.mcp.callTool({ name: block.name, arguments: block.input });
+                            return {
+                                type: "tool_result",
+                                tool_use_id: block.id,
+                                content: JSON.stringify(response),
+                                is_error: response.isError === true
+                            } satisfies ToolResultBlock;
+                        } catch (err) {
+                            return {
+                                type: "tool_result",
+                                tool_use_id: block.id,
+                                content: err instanceof Error ? err.message : "Tool call failed",
+                                is_error: true
+                            } satisfies ToolResultBlock;
+                        }
+                    })
+                );
+
+                setMessages(prev =>
+                    prev.map(m => {
+                        if (!(m.role === "assistant")) return m;
+                        const updatedContent = m.content.map(block => {
+                            if (block.type !== "tool_use") return block;
+                            const matchingResult = toolResults.find(r => r.tool_use_id === block.id);
+                            if (!matchingResult) return block;
+
+                            let matchedOutput;
+                            const parsedObj = JSON.parse(matchingResult.content);
+                            if (
+                                parsedObj instanceof Object &&
+                                parsedObj.content &&
+                                parsedObj.content[0].type === "text"
+                            ) {
+                                matchedOutput = parsedObj.content[0].text;
+                            } else {
+                                matchedOutput = matchingResult.content;
+                            }
+
+                            return {
+                                ...block,
+                                status: matchingResult.is_error ? "error" : "completed",
+                                output: matchedOutput
+                            } satisfies ToolUseBlock;
+                        });
+                        return { ...m, content: updatedContent };
+                    })
+                );
 
                 const toolResultMessage: UserMessageProps = {
                     id: uuidv4(),
@@ -184,7 +234,7 @@ const Chat = () => {
                     timeRef: new Date()
                 };
                 addMessage(toolResultMessage);
-                conversationHistory = [ ...conversationHistory, { role: "user", content: toolResults } ]
+                conversationHistory = [...conversationHistory, { role: "user", content: toolResults }];
             }
         } catch (error) {
             notify("error", "Unable to send LLM message.");

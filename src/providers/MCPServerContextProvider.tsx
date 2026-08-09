@@ -1,4 +1,10 @@
-import { Client, StreamableHTTPClientTransport } from "@modelcontextprotocol/client";
+import {
+    Client,
+    StreamableHTTPClientTransport,
+    type Tool,
+    type Prompt,
+    type Resource
+} from "@modelcontextprotocol/client";
 import { useContext, useEffect, useState, type ReactNode } from "react";
 
 import { LLMContext } from "../context/LLMContext";
@@ -24,8 +30,29 @@ const MCPServerContextProvider = ({ children }: { children: ReactNode }) => {
     const [waitingForLLMToConnect, setWaitingforLLMToConnect] = useState(false);
     const [mcpServerEndpoint, setMcpServerEndpoint] = useState<URL>();
 
+    // MCP features
+    const [tools, setTools] = useState<Tool[]>();
+    const [resources, setResources] = useState<Resource[]>();
+    const [prompts, setPrompts] = useState<Prompt[]>();
+
     // API Client
     const { mcpGet } = useMCPFetch(ipAddress);
+
+    // Tools, resources, prompts
+    const refreshMCP = async () => {
+        // Tools
+        const toolsResult = await mcp?.listTools();
+        console.log(toolsResult);
+        setTools(toolsResult?.tools);
+
+        // Resources
+        const resourcesResult = await mcp?.listResources();
+        setResources(resourcesResult?.resources);
+
+        // Prompts
+        const promptsResult = await mcp?.listPrompts();
+        setPrompts(promptsResult?.prompts);
+    };
 
     const establishMCPConnection = async () => {
         if (connectionStatus !== "connecting" || llmCtx.connectionStatus !== "connected" || !mcpServerEndpoint)
@@ -52,6 +79,9 @@ const MCPServerContextProvider = ({ children }: { children: ReactNode }) => {
             setConnectionStatus("not connected");
             return;
         }
+
+        // Call MCP detail functions
+        await refreshMCP();
 
         notify("info", "Connected to the MCP server.");
         setConnectionStatus("connected");
@@ -113,7 +143,7 @@ const MCPServerContextProvider = ({ children }: { children: ReactNode }) => {
     return (
         <MCPServerContext.Provider
             value={
-                connectionStatus == "connected" && mcp
+                connectionStatus == "connected" && mcp && tools && resources && prompts
                     ? {
                           connect,
                           connectionStatus,
@@ -121,6 +151,9 @@ const MCPServerContextProvider = ({ children }: { children: ReactNode }) => {
                           sessionUUID,
                           deviceName,
                           wifiSSID,
+                          tools,
+                          resources,
+                          prompts,
                           setConnectionStatus,
                           setIpAddress,
                           setSessionUUID,

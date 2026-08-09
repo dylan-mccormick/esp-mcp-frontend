@@ -12,7 +12,7 @@ const loadInitialMessages = (): ChatMessage[] => {
         console.error("Failed to load initial messages from sessionStorage:", error);
         return [];
     }
-}
+};
 
 const ChatContextProvider = ({ children }: { children: ReactNode }) => {
     // State
@@ -27,7 +27,11 @@ const ChatContextProvider = ({ children }: { children: ReactNode }) => {
         setMessages([]);
     }, []);
 
-    return <ChatContext.Provider value={{ messages, setMessages, addMessage, clearMessages }}>{children}</ChatContext.Provider>;
+    return (
+        <ChatContext.Provider value={{ messages, setMessages, addMessage, clearMessages }}>
+            {children}
+        </ChatContext.Provider>
+    );
 };
 
 export default ChatContextProvider;

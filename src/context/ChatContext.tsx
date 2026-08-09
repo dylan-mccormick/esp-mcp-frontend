@@ -1,6 +1,7 @@
 import { createContext } from "react";
-import type { UserMessageProps } from "../components/UserMessage";
+
 import type { AssistantMessageProps } from "../components/AssistantMessage";
+import type { UserMessageProps } from "../components/UserMessage";
 
 export interface TextBlock {
     type: "text";
@@ -12,6 +13,10 @@ export interface ToolUseBlock {
     id: string;
     name: string;
     input: Record<string, unknown>;
+
+    // UI-only
+    status?: "running" | "completed" | "error";
+    output?: string;
 }
 
 export interface ToolResultBlock {
