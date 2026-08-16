@@ -6,6 +6,7 @@ import remarkGfm from "remark-gfm";
 
 import type { BaseChatMessage } from "../context/ChatContext";
 import ToolUsageBubble from "./ToolUsageBubble";
+import { v4 } from "uuid";
 
 export interface AssistantMessageProps extends BaseChatMessage {
     role: "assistant";
@@ -31,6 +32,7 @@ const AssistantMessage = ({ content, model, children }: AssistantMessageProps) =
                                 <>
                                     <div className="prose prose-sm max-w-none">
                                         <ReactMarkdown
+                                        key={v4()}
                                             remarkPlugins={[remarkGfm]}
                                             rehypePlugins={[rehypeHighlight]}>
                                             {data.text}
@@ -52,6 +54,7 @@ const AssistantMessage = ({ content, model, children }: AssistantMessageProps) =
                             return (
                                 <div className="prose prose-sm max-w-none">
                                     <ReactMarkdown
+                                        key={data.tool_use_id}
                                         remarkPlugins={[remarkGfm]}
                                         rehypePlugins={[rehypeHighlight]}>
                                         {data.content}
