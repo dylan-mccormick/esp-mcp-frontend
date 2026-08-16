@@ -4,15 +4,12 @@ import AssistantMessage from "../components/AssistantMessage";
 import ChatComposer from "../components/ChatComposer";
 import ConnectionManagerButton from "../components/ConnectionManagerButton";
 import UserMessage from "../components/UserMessage";
-import {
-    ChatContext
-} from "../context/ChatContext";
+import { ChatContext } from "../context/ChatContext";
 import { LLMContext } from "../context/LLMContext";
 import { MCPServerContext } from "../context/MCPServerContext";
 import useSendMessage from "../hooks/useSendMessage";
 
 const Chat = () => {
-
     // Context
     const llmCtx = useContext(LLMContext);
     const mcpCtx = useContext(MCPServerContext);
