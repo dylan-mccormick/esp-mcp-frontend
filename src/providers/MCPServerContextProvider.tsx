@@ -42,7 +42,6 @@ const MCPServerContextProvider = ({ children }: { children: ReactNode }) => {
     const refreshMCP = async () => {
         // Tools
         const toolsResult = await mcp?.listTools();
-        console.log(toolsResult);
         setTools(toolsResult?.tools);
 
         // Resources
