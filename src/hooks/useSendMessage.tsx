@@ -18,6 +18,7 @@ import {
 import { LLMContext } from "../context/LLMContext";
 import { MCPServerContext } from "../context/MCPServerContext";
 import { NotificationContext } from "../context/NotificationContext";
+import { createFrontendTools } from "../tools/FrontendTools";
 
 const useSendMessage = () => {
     // Context
@@ -33,6 +34,7 @@ const useSendMessage = () => {
     const toApiContent = (blocks: ContentBlock[]): ContentBlock[] =>
         blocks.map(b => {
             if (b.type !== "tool_use") return b;
+            // oxlint-disable-next-line no-unused-vars
             const { status, output, ...apiSafe } = b;
             return apiSafe;
         });
@@ -103,10 +105,24 @@ const useSendMessage = () => {
     // Use local MCP Client tools, then use MCP Server tools
     const handleToolUseBlocks = async (blocks: ToolUseBlock[]): Promise<ToolResultBlock[]> => {
         if (mcpCtx.connectionStatus !== "connected") throw new Error("MCP Server became disconnected.");
+        const frontendTools = createFrontendTools(mcpCtx);
+
         return Promise.all(
             blocks.map(async block => {
                 try {
-                    const response = await mcpCtx.mcp.callTool({ name: block.name, arguments: block.input });
+                    const frontendTool = frontendTools.find(t => t.name === block.name);
+                    const frontendToolResult = await frontendTool?.execute(block.input);
+                    const response = frontendTool
+                        ? {
+                              type: "tool_result",
+                              tool_use_id: block.id,
+                              isError: frontendToolResult == undefined,
+                              content:
+                                  frontendToolResult == undefined
+                                      ? "No resource by the requested URI exists."
+                                      : JSON.stringify(frontendToolResult)
+                          }
+                        : await mcpCtx.mcp.callTool({ name: block.name, arguments: block.input });
                     return {
                         type: "tool_result",
                         tool_use_id: block.id,
@@ -138,16 +154,21 @@ const useSendMessage = () => {
                         return;
                     }
 
+                    const frontendTools = createFrontendTools(mcpCtx);
+
                     llmCtx.client.messages
                         .stream({
                             max_tokens: llmCtx.maxTokens,
                             messages: conversationHistory,
                             model: llmCtx.model,
-                            tools: mcpCtx.tools.map(t => ({
-                                name: t.name,
-                                description: t.description,
-                                input_schema: t.inputSchema
-                            })),
+                            tools: [
+                                ...frontendTools,
+                                ...mcpCtx.tools.map(t => ({
+                                    name: t.name,
+                                    description: t.description,
+                                    input_schema: t.inputSchema
+                                }))
+                            ],
 
                             cache_control: { type: "ephemeral" }
                         })
