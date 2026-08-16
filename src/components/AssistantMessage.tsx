@@ -3,10 +3,10 @@ import { type ReactNode } from "react";
 import ReactMarkdown from "react-markdown";
 import rehypeHighlight from "rehype-highlight";
 import remarkGfm from "remark-gfm";
+import { v4 } from "uuid";
 
 import type { BaseChatMessage } from "../context/ChatContext";
 import ToolUsageBubble from "./ToolUsageBubble";
-import { v4 } from "uuid";
 
 export interface AssistantMessageProps extends BaseChatMessage {
     role: "assistant";
@@ -32,7 +32,7 @@ const AssistantMessage = ({ content, model, children }: AssistantMessageProps) =
                                 <>
                                     <div className="prose prose-sm max-w-none">
                                         <ReactMarkdown
-                                        key={v4()}
+                                            key={v4()}
                                             remarkPlugins={[remarkGfm]}
                                             rehypePlugins={[rehypeHighlight]}>
                                             {data.text}
