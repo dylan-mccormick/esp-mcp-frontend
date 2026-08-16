@@ -20,6 +20,8 @@ import { MCPServerContext } from "../context/MCPServerContext";
 import { NotificationContext } from "../context/NotificationContext";
 import { createFrontendTools } from "../tools/FrontendTools";
 
+const SYSTEM_PROMPT_BASE = `You control an ESP32 microcontroller via MCP tools. You currently have access to the following resources:`;
+
 const useSendMessage = () => {
     // Context
     const { notify } = useContext(NotificationContext);
@@ -158,6 +160,8 @@ const useSendMessage = () => {
 
                     llmCtx.client.messages
                         .stream({
+                            system: `${SYSTEM_PROMPT_BASE}
+                            ${mcpCtx.resources.map(r => `${r.name} (${r.uri}) - ${r.description}`).join(`\n`)}`,
                             max_tokens: llmCtx.maxTokens,
                             messages: conversationHistory,
                             model: llmCtx.model,
