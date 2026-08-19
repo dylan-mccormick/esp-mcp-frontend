@@ -13,7 +13,7 @@ const ConnectionManagerButton = () => {
     const [lowestConnectionStatus, setLowestConnectionStatus] = useState<ConnectionState>("not connected");
 
     useEffect(() => {
-        if (llmConnectionStatus.length < mcpConnectionStatus.length) {
+        if (llmConnectionStatus.length > mcpConnectionStatus.length) {
             // Coincidentally, lower length = worse connection status
             setLowestConnectionStatus(llmConnectionStatus);
             return;
