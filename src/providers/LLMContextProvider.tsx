@@ -19,10 +19,23 @@ const LLMContextProvider = ({ children }: { children: ReactNode }) => {
     // Method to initiate a connection
     const connect = (key: string) => {
         setConnectionStatus("connecting");
+
+        // SECURITY NOTE: This client runs in the browser, which means your API key is exposed
+        // to potential XSS attacks. For production systems:
+        // 1. Use a backend proxy to handle API authentication
+        // 2. Implement proper CORS policies
+        // 3. Never expose API keys directly in client-side code
+        // 4. Consider using temporary credentials from your backend
+        if (!key || key.trim().length === 0) {
+            notify("error", "API key cannot be empty.");
+            setConnectionStatus("not connected");
+            return;
+        }
+
         setClient(
             new Anthropic({
                 apiKey: key,
-                dangerouslyAllowBrowser: true // TODO: remove this for any prod systems!!
+                dangerouslyAllowBrowser: true
             })
         );
         setConnectionStatus("connected");

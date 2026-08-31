@@ -2,6 +2,7 @@ import { Cable, Cpu, Wifi } from "lucide-react";
 import { useCallback, useContext, useState } from "react";
 
 import { MCPServerContext } from "../context/MCPServerContext";
+import { NotificationContext } from "../context/NotificationContext";
 import ConnectionStatusBadge from "./ConnectionStatusBadge";
 import UnfocusOnEnterInput from "./UnfocusOnEnterInput";
 
@@ -9,12 +10,20 @@ const MicrocontrollerCard = () => {
     // Context
     const { connect, connectionStatus, setIpAddress, ipAddress, deviceName, wifiSSID, sessionUUID } =
         useContext(MCPServerContext);
+    const { notify } = useContext(NotificationContext);
 
     // State
     const [enteredIpAddress, setEnteredIpAddress] = useState<string>(ipAddress ?? "");
 
     // Connect sig
     const attemptConnection = useCallback(() => {
+        // Validate IP address format
+        const ipPattern = /^(\d{1,3}\.){3}\d{1,3}$|^localhost$|^[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+        if (!enteredIpAddress || !ipPattern.test(enteredIpAddress)) {
+            notify("error", "Please enter a valid IP address, hostname, or localhost.");
+            return;
+        }
+
         setIpAddress(enteredIpAddress);
         connect();
     }, [enteredIpAddress]);

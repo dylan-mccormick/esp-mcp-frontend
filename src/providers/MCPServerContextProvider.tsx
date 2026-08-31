@@ -104,10 +104,20 @@ const MCPServerContextProvider = ({ children }: { children: ReactNode }) => {
                     throw new Error(`HTTP request failed with status code ${res.status}: ${await res.text()}`);
                 }
 
-                const data = await res.json();
+                let data;
+                try {
+                    data = await res.json();
+                } catch (err) {
+                    throw new Error("Invalid JSON response from MCP server /info endpoint");
+                }
 
-                setDeviceName(data.deviceName);
-                setWifiSSID(data.wifiSSID);
+                // Validate response contains required fields
+                if (!data.mcpEndpoint) {
+                    throw new Error("MCP server response missing required mcpEndpoint field");
+                }
+
+                setDeviceName(data.deviceName || "Unknown Device");
+                setWifiSSID(data.wifiSSID || "Unknown Network");
                 setMcpServerEndpoint(data.mcpEndpoint);
 
                 // Wait until Anthropic client is connected
