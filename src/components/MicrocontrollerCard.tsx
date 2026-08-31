@@ -23,7 +23,7 @@ const MicrocontrollerCard = () => {
             notify("error", "Please enter a valid IP address, hostname, or localhost.");
             return;
         }
-        
+
         setIpAddress(enteredIpAddress);
         connect();
     }, [enteredIpAddress]);
