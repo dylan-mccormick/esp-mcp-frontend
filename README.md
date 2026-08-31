@@ -23,17 +23,20 @@ A modern React-based web interface for connecting to an ESP32 microcontroller ru
 ### Installation
 
 1. Clone the repository:
+
 ```bash
 git clone https://github.com/dylan-mccormick/esp-mcp-frontend.git
 cd esp-mcp-frontend
 ```
 
 2. Install dependencies:
+
 ```bash
 pnpm install
 ```
 
 3. Start the development server:
+
 ```bash
 pnpm run dev
 ```
@@ -47,6 +50,7 @@ pnpm run build
 ```
 
 Preview the production build:
+
 ```bash
 pnpm run preview
 ```
@@ -98,12 +102,14 @@ Create a `.env.example` for reference. Key variables:
 ### Connection Settings
 
 **LLM (Anthropic) Connection**:
+
 - Navigate to the Connection Manager page
 - Enter your Anthropic API key
 - Select the model (default: `claude-haiku-4-5`)
 - Set max tokens (default: 1024, max: 64000)
 
 **MCP Server (ESP32) Connection**:
+
 - Enter the ESP32's IP address or hostname
 - The system will automatically discover available tools and resources
 
@@ -114,6 +120,7 @@ Create a `.env.example` for reference. Key variables:
 This is a browser-based application that runs entirely on the client side. **Your API key is exposed in the browser memory** and is **NOT sent through a backend**.
 
 **For production or sensitive use cases:**
+
 1. **Use a backend proxy** to handle API authentication instead of exposing keys in the browser
 2. **Implement CORS policies** to restrict which domains can access your MCP server
 3. **Use temporary credentials** (e.g., short-lived tokens from your backend)
@@ -145,6 +152,7 @@ This is a browser-based application that runs entirely on the client side. **You
 ### Code Quality
 
 This project uses:
+
 - **oxlint**: Fast JavaScript/TypeScript linter
 - **oxfmt**: Code formatter
 - **TypeScript**: Full type safety
@@ -166,6 +174,7 @@ This frontend connects to an ESP32 running an MCP server. For the MCP server imp
 **[ESP32 MCP Server Repository](https://github.com/yourusername/esp-mcp-server)**
 
 The MCP server handles:
+
 - Exposing tools for the LLM to control the ESP32
 - Providing resources (files, data) accessible through the frontend
 - Managing device communication and state
