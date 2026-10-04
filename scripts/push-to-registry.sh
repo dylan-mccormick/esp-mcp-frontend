@@ -4,22 +4,22 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-BASE_URL="https://registry-api.mnmzc.us.to/r/7/api/v1/files/"
+BASE_URL="https://registry-api.mnmzc.dev/r/7/api/v1/files/"
 DIST_DIR="dist"
 
 echo "Purging existing files from registry..."
 curl --location --request \
-        DELETE "https://registry-api.mnmzc.us.to/r/7/api/v1/files/frontend" \
+        DELETE "https://registry-api.mnmzc.dev/r/7/api/v1/files/frontend" \
         --header "x-api-key: $REGISTRY_API_KEY"
 
 find "$DIST_DIR" -type f | while read -r file; do
     rel_path="${file#$DIST_DIR/}"
     echo "Pushing $rel_path to registry..."
     curl --location --request \
-        PUT "https://registry-api.mnmzc.us.to/r/7/api/v1/files/frontend/${rel_path}" \
+        PUT "https://registry-api.mnmzc.dev/r/7/api/v1/files/frontend/${rel_path}" \
         --header "x-api-key: $REGISTRY_API_KEY" \
         --form "file=@\"$file\""
     curl --location --request \
-        PATCH "https://registry-api.mnmzc.us.to/r/7/api/v1/files/frontend/${rel_path}/public?public=true" \
+        PATCH "https://registry-api.mnmzc.dev/r/7/api/v1/files/frontend/${rel_path}/public?public=true" \
         --header "x-api-key: $REGISTRY_API_KEY"
 done
