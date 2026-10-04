@@ -171,7 +171,7 @@ To add frontend-only tools that don't require the MCP server:
 
 This frontend connects to an ESP32 running an MCP server. For the MCP server implementation, see:
 
-**[ESP32 MCP Server Repository](https://github.com/yourusername/esp-mcp-server)**
+**[ESP32 MCP Server Repository](https://github.com/dylan-mccormick/esp-mcp-server)**
 
 The MCP server handles:
 
